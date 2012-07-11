@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Nine Men Morris Engine Test</title>
+  <script type="text/javascript">
+  function engineInitialized() {
+      var ret = document.engine.echo('Hello');
+      alert(ret);
+  }
+  </script>
+</head>
+<body>
+  <h1>Nine Men Morris Engine Test</h1>
+  <applet name="engine" code="Engine" archive="engine.jar?5" width="800" height="600" MAYSCRIPT>
+  	<param name="applet_ready_callback" value="engineInitialized"/>
+  </applet>
+</body>
+</html>
