@@ -2,8 +2,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
 import java.applet.Applet;
-import netscape.javascript.JSObject; 
-import netscape.javascript.JSException; 
+import java.util.Vector;
+//import netscape.javascript.JSObject; 
+//import netscape.javascript.JSException; 
 
 public class Engine extends Applet {
 	
@@ -19,15 +20,50 @@ public class Engine extends Applet {
         public boolean whitesTurn() {
             return turns % 2 == 1;
         }
+        
+        public void doTurn(Turn t) {
+            // Paranoia checking
+            if(t.white != whitesTurn())
+                throw new RuntimeException("It is not " + (t.white ? "whites" : "blacks") + " turn!");
+            if(board[t.to] != 0)
+                throw new RuntimeException("Field " + t.to + " occupied!");
+            if(t.from == -1) {
+                if(t.white && whiteDeck < 1)
+                    throw new RuntimeException("Whites deck is empty!");
+                if(!t.white && blackDeck < 1)
+                    throw new RuntimeException("Blacks deck is empty!");
+            }
+            // Now do the turn
+            if(t.white) {
+                board[t.to] = 1;
+                whiteDeck--;
+            } else {
+                board[t.to] = -1;
+                blackDeck--;
+            }
+            turns++;
+        }
+        
+        public Turn[] genTurnList() {
+            Vector turns = new Vector();
+            turns.add(new Turn(true, 0));
+            turns.add(new Turn(false, 3));
+            return (Turn[]) turns.toArray(new Turn[0]);
+        }
 
     }
     
     class Turn {
+        
+        public Turn(boolean white, int to) {
+            this.white = white;
+            this.to = to;
+        }
     
         public boolean white = true;
-        public byte from = -1;
-        public byte to = 0;
-        public byte remove = -1;
+        public int from = -1;
+        public int to = 0;
+        public int remove = -1;
    
     }
 	
@@ -46,19 +82,18 @@ public class Engine extends Applet {
 	public void init() {
 		System.out.println("init");
 		f = new Font("Helvetica", Font.BOLD, 16);
-        pos.board[0] = 1;
-        pos.board[4] = -1;
 	}
 	
 	public void start() {
 		System.out.println("start");
+        doTurn("0");
+        doTurn("3");
         try {
         	String jsCallbackName = getParameter("applet_ready_callback");
             if(jsCallbackName != null) {
-                JSObject window = JSObject.getWindow(this);
-                window.eval(jsCallbackName + "()");
+                netscape.javascript.JSObject.getWindow(this).eval(jsCallbackName + "()");
             }
-        } catch(JSException ex) {
+        } catch(netscape.javascript.JSException ex) {
         	ex.printStackTrace();
         }
 	}
@@ -121,7 +156,11 @@ public class Engine extends Applet {
     }
     
     public String echo(String str) {
+    	return version + " " + str;
+    }
+    
+    public void doTurn(String t) {
+        pos.doTurn(new Turn(pos.whitesTurn(), Integer.parseInt(t)));
     	repaint();
-    	return "Echo: " + str;
     }
 }

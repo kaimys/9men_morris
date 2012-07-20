@@ -10,19 +10,28 @@
   </style>
   <script type="text/javascript">
   function engineInitialized() {
-      setTimeout(function() {
-          document.getElementById('output').innerHTML = document.engine.echo('Hello')
-      }, 1000);
+      document.getElementById('output').innerHTML = document.engine.echo('Hello');
+      document.getElementById('send_turn').addEventListener("click", function() {
+          var turn = document.getElementById('turn').value;
+          try {
+            document.engine.doTurn(turn);
+          } catch(err) {
+            document.getElementById('output').innerHTML = err.toString();
+          }
+      }, false);
   }
   </script>
 </head>
 <body>
     <h1>Nine Men Morris Engine Test</h1>
     <div class="applet_container">
-        <applet name="engine" code="Engine" archive="engine.jar?15" width="800" height="800"> <!-- MAYSCRIPT -->
+        <applet name="engine" code="Engine" archive="engine.jar?31" width="800" height="800"> <!-- MAYSCRIPT -->
             <param name="applet_ready_callback" value="engineInitialized"/>
         </applet>
     </div>
-    <div id="output"></div>
+    Output: <span id="output"></span>
+    <form>
+        Turn <input id="turn" type="text" name="turn"> <input id="send_turn" type="button" value="do it!">
+    </form>
 </body>
 </html>
