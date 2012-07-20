@@ -3,17 +3,26 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>Nine Men Morris Engine Test</title>
+  <style type="text/css">
+      .applet_container {
+          border: black thin dashed;
+      }
+  </style>
   <script type="text/javascript">
   function engineInitialized() {
-      var ret = document.engine.echo('Hello');
-      alert(ret);
+      setTimeout(function() {
+          document.getElementById('output').innerHTML = document.engine.echo('Hello')
+      }, 1000);
   }
   </script>
 </head>
 <body>
-  <h1>Nine Men Morris Engine Test</h1>
-  <applet name="engine" code="Engine" archive="engine.jar?5" width="800" height="600" MAYSCRIPT>
-  	<param name="applet_ready_callback" value="engineInitialized"/>
-  </applet>
+    <h1>Nine Men Morris Engine Test</h1>
+    <div class="applet_container">
+        <applet name="engine" code="Engine" archive="engine.jar?15" width="800" height="800"> <!-- MAYSCRIPT -->
+            <param name="applet_ready_callback" value="engineInitialized"/>
+        </applet>
+    </div>
+    <div id="output"></div>
 </body>
 </html>
