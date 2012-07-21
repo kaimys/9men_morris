@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
 import java.applet.Applet;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.Vector;
 import netscape.javascript.JSObject; 
 import netscape.javascript.JSException; 
@@ -34,8 +36,8 @@ public class Engine extends Applet {
 	
 	public void start() {
 		System.out.println("start");
-        doTurn("0");
-        doTurn("3");
+        doTurn(null, "0", null);
+        doTurn("", "3", "");
         try {
         	String jsCallbackName = getParameter("applet_ready_callback");
             if(jsCallbackName != null) {
@@ -107,8 +109,20 @@ public class Engine extends Applet {
     	return version + " " + str;
     }
     
-    public void doTurn(String t) {
-        pos.doTurn(new Turn(pos.whitesTurn(), Integer.parseInt(t)));
-    	repaint();
+    public String doTurn(String from, String to, String remove) {
+        try {
+            Turn t = new Turn(pos.whitesTurn(), Integer.parseInt(to));
+            if(from != null && !from.equals(""))
+                t.from = Integer.parseInt(from);
+            if(remove != null && !remove.equals(""))
+                t.remove = Integer.parseInt(remove);
+            pos.doTurn(t);
+            repaint();
+            return t.toString();
+        } catch(RuntimeException ex) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ex.printStackTrace(new PrintWriter(baos));
+            return ex.toString() + baos.toString();
+        }
     }
 }
