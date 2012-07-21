@@ -1,72 +1,20 @@
+
+/**
+ *
+ * @author kai
+ */
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
 import java.applet.Applet;
 import java.util.Vector;
-//import netscape.javascript.JSObject; 
-//import netscape.javascript.JSException; 
+import netscape.javascript.JSObject; 
+import netscape.javascript.JSException; 
 
 public class Engine extends Applet {
 	
 	private static final long serialVersionUID = 1L;
     
-    class Position {
-
-        public byte[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        public byte whiteDeck = 9;
-        public byte blackDeck = 9;
-        public short turns = 1;
-
-        public boolean whitesTurn() {
-            return turns % 2 == 1;
-        }
-        
-        public void doTurn(Turn t) {
-            // Paranoia checking
-            if(t.white != whitesTurn())
-                throw new RuntimeException("It is not " + (t.white ? "whites" : "blacks") + " turn!");
-            if(board[t.to] != 0)
-                throw new RuntimeException("Field " + t.to + " occupied!");
-            if(t.from == -1) {
-                if(t.white && whiteDeck < 1)
-                    throw new RuntimeException("Whites deck is empty!");
-                if(!t.white && blackDeck < 1)
-                    throw new RuntimeException("Blacks deck is empty!");
-            }
-            // Now do the turn
-            if(t.white) {
-                board[t.to] = 1;
-                whiteDeck--;
-            } else {
-                board[t.to] = -1;
-                blackDeck--;
-            }
-            turns++;
-        }
-        
-        public Turn[] genTurnList() {
-            Vector turns = new Vector();
-            turns.add(new Turn(true, 0));
-            turns.add(new Turn(false, 3));
-            return (Turn[]) turns.toArray(new Turn[0]);
-        }
-
-    }
-    
-    class Turn {
-        
-        public Turn(boolean white, int to) {
-            this.white = white;
-            this.to = to;
-        }
-    
-        public boolean white = true;
-        public int from = -1;
-        public int to = 0;
-        public int remove = -1;
-   
-    }
-	
 	Font f;
 	String version = "Nine Men Morris Engine 1.0";
     Color white = Color.YELLOW;
@@ -91,9 +39,9 @@ public class Engine extends Applet {
         try {
         	String jsCallbackName = getParameter("applet_ready_callback");
             if(jsCallbackName != null) {
-                netscape.javascript.JSObject.getWindow(this).eval(jsCallbackName + "()");
+                JSObject.getWindow(this).eval(jsCallbackName + "()");
             }
-        } catch(netscape.javascript.JSException ex) {
+        } catch(JSException ex) {
         	ex.printStackTrace();
         }
 	}

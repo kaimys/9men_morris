@@ -1,6 +1,6 @@
 <project name="Engine" basedir=".">
   <target name="compile">
-    <javac srcdir="." destdir="target">
+    <javac srcdir="src" destdir="target">
         <classpath>
           <pathelement path="${classpath}"/>
           <pathelement location="plugin.jar"/>
